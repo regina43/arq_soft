@@ -16,11 +16,6 @@ public class RegistrosListener extends WindowAdapter {
   public void windowClosing(WindowEvent event) {
     try {
       this.menuRegistros.exit();
-      synchronized (this.menuRegistros){
-        this.menuRegistros.notify();
-      }
-      this.menuRegistros.setVisible(false);
-      this.menuRegistros.dispose();
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     }

@@ -141,15 +141,8 @@ public class MenuSintomas extends JFrame implements ActionListener{
   }
 
   public void exit() throws FileNotFoundException {
-    int result = JOptionPane.showConfirmDialog(panel,
-            "Do you want to exit?",
-            "Exit?",
-            JOptionPane.YES_NO_OPTION);
-    JOptionPane.setDefaultLocale(null);
-    if (result == JOptionPane.YES_OPTION) {
-      saveFile();
-      setVisible(false);
-    }
+    saveFile();
+    this.setVisible(false);
   }
 
   private void saveFile() {

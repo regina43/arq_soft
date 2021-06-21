@@ -11,7 +11,7 @@ public class CargarSintomas {
   private Sintomas sintomas;
 
   public CargarSintomas(){
-    serializadorSintomas = new SerializadorSintomas<>("sintomas.dat","cargarsintomas");
+    this.serializadorSintomas = new SerializadorSintomas<>("sintomas.dat","cargarsintomas");
     recuperarSintomas();
     iniciarMenuSintomas();
   }
@@ -26,8 +26,8 @@ public class CargarSintomas {
 
   private void recuperarSintomas() {
     this.sintomas = new Sintomas();
-    if (serializadorSintomas.deserializar() != null) {
-      sintomas = serializadorSintomas.deserializar();
+    if (serializadorSintomas.existeArchivo()) {
+      this.sintomas = serializadorSintomas.deserializar();
     }
   }
 

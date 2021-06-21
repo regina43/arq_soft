@@ -11,8 +11,10 @@ public class SerializadorSintomas<T> {
 
   private final String nombrePaquete;
   private String nombreArchivo;
+  private String nombreSimple;
 
   public SerializadorSintomas(String nombreArchivo, String nombrePaquete) {
+    this.nombreSimple = nombreArchivo;
     this.nombreArchivo = nombreArchivo;
     this.nombrePaquete = nombrePaquete;
     this.nombreArchivo = getPath();
@@ -23,9 +25,9 @@ public class SerializadorSintomas<T> {
       ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(nombreArchivo));
       out.writeObject(shapes);
       out.close();
-      System.out.println("Datos guardados en: " + nombreArchivo);
+      System.out.println("Datos guardados en: " + nombreSimple);
     } catch (IOException e) {
-      System.out.println("No se puede guardar el archivo: " + nombreArchivo);
+      System.out.println("No se puede guardar el archivo: " + nombreSimple);
     }
   }
 
@@ -68,8 +70,13 @@ public class SerializadorSintomas<T> {
         ois.close();
       }
     } catch (IOException | ClassNotFoundException e) {
-      System.err.println("\t[ El objeto no se pudo leer ]" + e);
+      System.err.println("\t[ El objeto no se pudo leer porque esta vacio]");
     }
     return objeto;
+  }
+
+  public boolean existeArchivo(){
+    File f = new File(this.nombreArchivo);
+    return f.exists();
   }
 }

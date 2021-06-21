@@ -81,15 +81,13 @@ public class MenuRegistros extends JFrame implements ActionListener{
   }
 
   public void exit() throws FileNotFoundException {
-    int result = JOptionPane.showConfirmDialog(panel,
-            "Do you want to exit?",
-            "Exit?",
-            JOptionPane.YES_NO_OPTION);
-    JOptionPane.setDefaultLocale(null);
-    if (result == JOptionPane.YES_OPTION) {
       saveFile();
+      synchronized (this){
+        this.notify();
+      }
+      this.setVisible(false);
+      this.dispose();
       System.exit(0);
-    }
   }
 
   public void saveFile() {

@@ -18,7 +18,7 @@ public class CargarRegistros {
 
   private void cargarRegistros() {
     this.registros = new monitor.Registros();
-    if (serializador.deserializar() != null) {
+    if (serializador.existeArchivo()) {
       this.registros = serializador.deserializar();
     }
   }
