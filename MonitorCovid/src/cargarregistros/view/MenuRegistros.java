@@ -12,7 +12,6 @@ import javax.swing.JLabel;
 import javax.swing.JFrame;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
-import javax.swing.JOptionPane;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -51,8 +50,8 @@ public class MenuRegistros extends JFrame implements ActionListener{
     this.panel.setLayout(null);
     this.getContentPane().add(panel);
 
-    JLabel nuevoRegistro = new JLabel("Nuevo registro");
-    nuevoRegistro.setBounds(50, 20, 100, 20);
+    JLabel nuevoRegistro = new JLabel("Monitoreo de sintomas");
+    nuevoRegistro.setBounds(50, 20, 200, 20);
     this.panel.add(nuevoRegistro);
 
     this.iniciarnRegistro = new JButton("Iniciar");
@@ -65,7 +64,7 @@ public class MenuRegistros extends JFrame implements ActionListener{
     registroTableModel.actualizarLista(registros);
 
     table = new JTable(registroTableModel);
-    table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+    table.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
     table.setPreferredScrollableViewportSize(Toolkit.getDefaultToolkit().getScreenSize());
     JScrollPane jScrollPane = new JScrollPane(table);
     jScrollPane.setBounds(20, 130, 340, 220);

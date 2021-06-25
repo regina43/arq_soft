@@ -37,12 +37,12 @@ public class MenuSintomas extends JFrame implements ActionListener{
   private JPanel panel;
   private JButton guardar;
 
-  public MenuSintomas(String titulo, CargarSintomas cargarSintomas, Sintomas sintomas) throws IOException {
+  public MenuSintomas(String titulo, CargarSintomas cargarSintomas, Sintomas sintomas, ControlSinonimos controlSinonimos) throws IOException {
     super(titulo);
     lectorDePaquete = new LectorDePaquete();
     this.cargarSintomas = cargarSintomas;
     this.sintomas = sintomas;
-    this.controlSinonimos = new ControlSinonimos();
+    this.controlSinonimos = controlSinonimos;
     this.setSize(400,400);
     iniciarComponentes();
     addWindowListener(new SintomasListener(this));

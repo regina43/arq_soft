@@ -135,7 +135,7 @@ public class ControlSinonimos {
     for(String s: v) {
       cadena.append(s);
       if (pos <= v.length - 1)
-      cadena.append(",");
+        cadena.append(",");
       pos++;
     }
     return cadena.toString();

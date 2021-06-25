@@ -6,6 +6,8 @@ import monitor.Registro;
 import monitor.Registros;
 import monitor.Sintomas;
 
+import java.util.Date;
+
 public class CargarRegistros {
   private final SerializadorRegistros<Registros> serializador;
   private Registros registros;
@@ -17,14 +19,21 @@ public class CargarRegistros {
   }
 
   private void cargarRegistros() {
-    this.registros = new monitor.Registros();
+    this.registros = new Registros();
     if (serializador.existeArchivo()) {
       this.registros = serializador.deserializar();
     }
   }
 
   public Registro getRegistro() {
-    return registros.peek();
+    Registro registro;
+    if (registros.isEmpty()) {
+      Sintomas nsintomas = new Sintomas();
+      registro = new Registro(new Date(), nsintomas);
+    } else {
+      registro = registros.peek();
+    }
+    return registro;
   }
 
   public void saveFile() {
