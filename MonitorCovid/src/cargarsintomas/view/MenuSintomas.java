@@ -14,9 +14,10 @@ import javax.swing.JLabel;
 import javax.swing.JFrame;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
-import javax.swing.JOptionPane;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableRowSorter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
@@ -25,7 +26,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-public class MenuSintomas extends JFrame implements ActionListener{
+public class MenuSintomas extends JFrame implements ActionListener {
   private final CargarSintomas cargarSintomas;
   private final Sintomas sintomas;
   private final LectorDePaquete lectorDePaquete;
@@ -36,6 +37,7 @@ public class MenuSintomas extends JFrame implements ActionListener{
   private JTable table;
   private JPanel panel;
   private JButton guardar;
+  private JButton salir;
 
   public MenuSintomas(String titulo, CargarSintomas cargarSintomas, Sintomas sintomas, ControlSinonimos controlSinonimos) throws IOException {
     super(titulo);
@@ -43,11 +45,11 @@ public class MenuSintomas extends JFrame implements ActionListener{
     this.cargarSintomas = cargarSintomas;
     this.sintomas = sintomas;
     this.controlSinonimos = controlSinonimos;
-    this.setSize(400,400);
+    this.setSize(500, 530);
     iniciarComponentes();
     addWindowListener(new SintomasListener(this));
     this.setVisible(true);
-    synchronized(this) {
+    synchronized (this) {
       try {
         this.wait();
       } catch (InterruptedException interruptedException) {
@@ -56,57 +58,66 @@ public class MenuSintomas extends JFrame implements ActionListener{
     }
   }
 
-  public void iniciarComponentes() throws IOException {
+  public void iniciarComponentes() {
     panel = new JPanel();
     panel.setLayout(null);
     this.getContentPane().add(panel);
 
     JLabel titulo = new JLabel();
     titulo.setText("Agregar nuevo sintoma");
-    titulo.setBounds(40,30,150,20);
+    titulo.setBounds(40, 30, 150, 20);
     panel.add(titulo);
 
     JLabel nombre = new JLabel();
     nombre.setText("Nombre: ");
-    nombre.setBounds(40,70,100,20);
+    nombre.setBounds(40, 70, 100, 20);
     panel.add(nombre);
 
-    JLabel tipo =  new JLabel();
+    JLabel tipo = new JLabel();
     tipo.setText("Tipo:");
-    tipo.setBounds(60,100,80,20);
+    tipo.setBounds(60, 100, 80, 20);
     panel.add(tipo);
 
     textoNombre = new JTextField();
-    textoNombre.setBounds(100, 70, 150, 20);
+    textoNombre.setBounds(100, 70, 300, 20);
     textoNombre.setFocusable(true);
     panel.add(textoNombre);
 
 
     tipos = new JComboBox<>();
-    tipos.setBounds(100, 100, 150,20);
+    tipos.setBounds(100, 100, 300, 20);
     panel.add(tipos);
 
-    List<String> listaClases = lectorDePaquete.getNombresClases("sintomas");
-    for (String nombreClase: listaClases) {
+    List<String> listaClases = lectorDePaquete.getNombresClases();
+    for (String nombreClase : listaClases) {
       tipos.addItem(nombreClase);
     }
 
-    sintomasTableModel=  new SintomaTableModel();
+    sintomasTableModel = new SintomaTableModel();
     sintomasTableModel.actualizarLista(sintomas);
     table = new JTable(sintomasTableModel);
+    table.getColumnModel().getColumn(0).setPreferredWidth(250);
+
+    TableRowSorter<SintomaTableModel> sorTable = new TableRowSorter<>(sintomasTableModel);
+    table.setRowSorter(sorTable);
+
     JScrollPane jScrollPane = new JScrollPane(table);
-    jScrollPane.setBounds(20,200,340, 150);
+    jScrollPane.setBounds(20, 200, 445, 230);
     panel.add(jScrollPane);
 
     this.guardar = new JButton("Guardar");
-    this.guardar.setBounds(160, 150,100,20);
+    this.guardar.setBounds(300, 150, 100, 20);
     this.guardar.addActionListener(this);
     this.panel.add(guardar);
 
+    this.salir = new JButton("Salir");
+    this.salir.setBounds(300, 450, 100, 20);
+    this.salir.addActionListener(this);
+    this.panel.add(salir);
   }
 
   private void addSintoma() throws IOException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-    String nombre = textoNombre.getText().toLowerCase().replaceAll("\\s{2,}", " "). trim();
+    String nombre = textoNombre.getText().toLowerCase().replaceAll("\\s{2,}", " ").trim();
     String nombreClase = "sintomas." + tipos.getSelectedItem();
     Class<?> cl = Class.forName(nombreClase);
     Constructor<?> constructor = cl.getConstructor(String.class);
@@ -142,7 +153,11 @@ public class MenuSintomas extends JFrame implements ActionListener{
 
   public void exit() throws FileNotFoundException {
     saveFile();
+    synchronized (this) {
+      this.notify();
+    }
     this.setVisible(false);
+    this.dispose();
   }
 
   private void saveFile() {
@@ -158,6 +173,13 @@ public class MenuSintomas extends JFrame implements ActionListener{
         addSintoma();
       } catch (IOException | ClassNotFoundException | IllegalAccessException | NoSuchMethodException | InvocationTargetException | InstantiationException ioException) {
         ioException.printStackTrace();
+      }
+    }
+    if (btnPulsado == this.salir) {
+      try {
+        this.exit();
+      } catch (FileNotFoundException fileNotFoundException) {
+        fileNotFoundException.printStackTrace();
       }
     }
   }

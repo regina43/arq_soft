@@ -1,5 +1,7 @@
 package cargarregistros.tools;
 
+import monitor.Registros;
+
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.FileInputStream;
@@ -7,11 +9,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.File;
 
-public class SerializadorRegistros<T> {
+public class SerializadorRegistros {
 
   private final String nombrePaquete;
   private String nombreArchivo;
-  private String nombreSimple;
+  private final String nombreSimple;
 
   public SerializadorRegistros(String nombreArchivo, String nombrePaquete) {
     this.nombreSimple = nombreArchivo;
@@ -20,26 +22,24 @@ public class SerializadorRegistros<T> {
     this.nombreArchivo = getPath();
   }
 
-  public void serializar(T shapes) {
+  public void serializar(Registros registros) {
     try {
-      ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(nombreArchivo));
-      out.writeObject(shapes);
-      out.close();
-      System.out.println("Datos guardados en: " + nombreSimple);
-    } catch (IOException e) {
+      ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(nombreArchivo));
+      outputStream.writeObject(registros);
+      outputStream.close();
+    } catch (IOException ioException) {
       System.out.println("No se puede guardar el archivo: " + nombreSimple);
     }
   }
 
-  private String getPath(){
-    File miDir = new File (".");
-    String dir="";
+  private String getPath() {
+    File miDir = new File(".");
+    String dir = "";
     String path;
     String separador = System.getProperty("file.separator");
     try {
-      dir= miDir.getCanonicalPath();
-    }
-    catch(Exception e) {
+      dir = miDir.getCanonicalPath();
+    } catch (Exception e) {
       e.printStackTrace();
     }
 
@@ -47,36 +47,39 @@ public class SerializadorRegistros<T> {
     File file2 = new File(dir);
     String[] a = file2.list();
 
-    for(int i=0; i<a.length; i++){
-      if(a[i].equals("src")){
-        desarrollo=true;
+    if (a != null) {
+      for (String s : a) {
+        if (s.equals("src")) {
+          desarrollo = true;
+          break;
+        }
       }
     }
 
-    if (!desarrollo){
-      path = dir+separador+nombrePaquete+separador+nombreArchivo;
+    if (!desarrollo) {
+      path = dir + separador + nombrePaquete + separador + nombreArchivo;
     } else {
-      path = dir+separador+"src"+separador+nombrePaquete+separador+nombreArchivo;
+      path = dir + separador + "src" + separador + nombrePaquete + separador + nombreArchivo;
     }
     return path;
   }
 
-  public T deserializar() {
-    T objeto = null;
+  public Registros deserializar() {
+    Registros registros = null;
     try {
       final FileInputStream fis = new FileInputStream(nombreArchivo);
       try (ObjectInputStream ois = new ObjectInputStream(fis)) {
-        objeto = (T) ois.readObject();
+        registros = (Registros) ois.readObject();
         ois.close();
       }
-    } catch (IOException | ClassNotFoundException e) {
-      System.err.println("\t[ El objeto no se pudo leer porque esta vacio]");
+    } catch (IOException | ClassNotFoundException exception) {
+      System.err.println("\t[ El objeto no se pudo leer ]");
     }
-    return objeto;
+    return registros;
   }
 
-  public boolean existeArchivo(){
-    File f = new File(this.nombreArchivo);
-    return f.exists();
+  public boolean existeArchivo() {
+    File file = new File(this.nombreArchivo);
+    return file.exists();
   }
 }

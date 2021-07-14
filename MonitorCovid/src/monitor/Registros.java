@@ -5,26 +5,26 @@ import java.util.Iterator;
 import java.util.Stack;
 
 public class Registros implements Iterable<Registro>, Serializable {
-    private Stack<Registro> registros;
+  private Stack<Registro> registros;
 
-    public Registros() {
-        registros = new Stack<>();
-    }
+  public Registros() {
+    registros = new Stack<>();
+  }
 
-    public void push(Registro r){
-        registros.push(r);
-    }
+  public void push(Registro r) {
+    registros.push(r);
+  }
 
-    public Registro peek() {
-        return registros.peek();
-    }
+  public Registro peek() {
+    return registros.peek();
+  }
 
-    public boolean isEmpty(){
-        return registros.isEmpty();
-    }
+  public boolean isEmpty() {
+    return registros.isEmpty();
+  }
 
-    @Override
-    public Iterator<Registro> iterator() {
-        return registros.iterator();
-    }
+  @Override
+  public Iterator<Registro> iterator() {
+    return registros.iterator();
+  }
 }

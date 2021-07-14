@@ -9,12 +9,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ControlSinonimos {
-  Map<String, String[]> sinonimos;
-  String path;
+  private Map<String, String[]> sinonimos;
+  private String path;
 
-  public ControlSinonimos(){
+  public ControlSinonimos() {
     this.sinonimos = new HashMap<>();
-    this.path = getPath("sinonimos","cargarsintomas");
+    this.path = getPath("sinonimos", "");
     leerSinonimos();
   }
 
@@ -23,26 +23,25 @@ public class ControlSinonimos {
     FileReader fr = null;
     BufferedReader br;
     try {
-      archivo = new File (this.path);
-      fr = new FileReader (archivo);
+      archivo = new File(this.path);
+      fr = new FileReader(archivo);
       br = new BufferedReader(fr);
 
       String linea;
-      while((linea=br.readLine())!=null) {
-        String [] linessep = linea.split("-");
+      while ((linea = br.readLine()) != null) {
+        String[] linessep = linea.split("-");
         String usado = linessep[0];
-        String [] palabras = linessep[1].split(",");
+        String[] palabras = linessep[1].split(",");
         this.sinonimos.put(usado, palabras);
       }
-    }
-    catch(Exception e){
+    } catch (Exception e) {
       e.printStackTrace();
-    }finally{
-      try{
-        if( null != fr ){
+    } finally {
+      try {
+        if (null != fr) {
           fr.close();
         }
-      }catch (Exception e2){
+      } catch (Exception e2) {
         e2.printStackTrace();
       }
     }
@@ -67,9 +66,9 @@ public class ControlSinonimos {
     String usado = null;
     boolean existe = false;
     for (Map.Entry<String, String[]> entry : sinonimos.entrySet()) {
-      String [] palabras = entry.getValue();
+      String[] palabras = entry.getValue();
       if (existe(palabra, palabras)) {
-        usado = palabras [0];
+        usado = palabras[0];
         if (usado.equals("no")) {
           entry.getValue()[0] = "si";
           existe = false;
@@ -89,7 +88,7 @@ public class ControlSinonimos {
 
   private boolean existe(String palabra, String[] palabras) {
     boolean existe = false;
-    for (String pal: palabras) {
+    for (String pal : palabras) {
       if (palabra.equals(pal)) {
         existe = true;
         break;
@@ -100,7 +99,7 @@ public class ControlSinonimos {
 
   private String usadoLlave(String palabra) {
     String usado = "ne";
-    String [] palabras = sinonimos.get(palabra);
+    String[] palabras = sinonimos.get(palabra);
     if (palabras != null) {
       usado = palabras[0];
     }
@@ -110,8 +109,7 @@ public class ControlSinonimos {
   public void escribirSinonimos() {
     FileWriter fichero = null;
     PrintWriter pw;
-    try
-    {
+    try {
       fichero = new FileWriter(this.path);
       pw = new PrintWriter(fichero);
 
@@ -132,7 +130,7 @@ public class ControlSinonimos {
   private String separarPorComas(String[] v) {
     StringBuilder cadena = new StringBuilder();
     int pos = 0;
-    for(String s: v) {
+    for (String s : v) {
       cadena.append(s);
       if (pos <= v.length - 1)
         cadena.append(",");
@@ -141,15 +139,14 @@ public class ControlSinonimos {
     return cadena.toString();
   }
 
-  private String getPath(String nombreArchivo, String nombrePaquete){
-    File miDir = new File (".");
-    String dir="";
+  private String getPath(String nombreArchivo, String nombrePaquete) {
+    File miDir = new File(".");
+    String dir = "";
     String path;
     String separador = System.getProperty("file.separator");
     try {
-      dir= miDir.getCanonicalPath();
-    }
-    catch(Exception e) {
+      dir = miDir.getCanonicalPath();
+    } catch (Exception e) {
       e.printStackTrace();
     }
 
@@ -157,16 +154,16 @@ public class ControlSinonimos {
     File file2 = new File(dir);
     String[] a = file2.list();
 
-    for(int i=0; i<a.length; i++){
-      if(a[i].equals("src")){
-        desarrollo=true;
+    for (int i = 0; i < a.length; i++) {
+      if (a[i].equals("src")) {
+        desarrollo = true;
       }
     }
 
-    if (!desarrollo){
-      path = dir+separador+nombrePaquete+separador+nombreArchivo;
+    if (!desarrollo) {
+      path = dir + separador + nombrePaquete + separador + nombreArchivo;
     } else {
-      path = dir+separador+"src"+separador+nombrePaquete+separador+nombreArchivo;
+      path = dir + separador + "src" + separador + nombrePaquete + separador + nombreArchivo;
     }
     return path;
   }

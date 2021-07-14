@@ -9,14 +9,14 @@ import java.io.FileNotFoundException;
 public class SintomasListener extends WindowAdapter {
   final MenuSintomas menuSintomas;
 
-  public SintomasListener(MenuSintomas menuSintomas){
+  public SintomasListener(MenuSintomas menuSintomas) {
     this.menuSintomas = menuSintomas;
   }
 
   public void windowClosing(WindowEvent event) {
     try {
       this.menuSintomas.exit();
-      synchronized (this.menuSintomas){
+      synchronized (this.menuSintomas) {
         this.menuSintomas.notify();
       }
       this.menuSintomas.setVisible(false);

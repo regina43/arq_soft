@@ -9,7 +9,7 @@ import java.util.List;
 
 public class SintomaTableModel extends AbstractTableModel {
 
-  private final String[] columnNames  = new String[] {"Sintoma","Categoria"};
+  private final String[] columnNames = new String[]{"Sintoma", "Categoria"};
   private final List<Sintoma> sintomas;
 
   public SintomaTableModel() {
@@ -44,7 +44,7 @@ public class SintomaTableModel extends AbstractTableModel {
   }
 
   private Object getNombreClase(String name) {
-    String [] nombreClase = name.split("\\.");
+    String[] nombreClase = name.split("\\.");
     return nombreClase[1];
   }
 

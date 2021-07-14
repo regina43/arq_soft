@@ -9,7 +9,7 @@ import java.io.FileNotFoundException;
 public class RegistrosListener extends WindowAdapter {
   final MenuRegistros menuRegistros;
 
-  public RegistrosListener(MenuRegistros menuRegistros){
+  public RegistrosListener(MenuRegistros menuRegistros) {
     this.menuRegistros = menuRegistros;
   }
 

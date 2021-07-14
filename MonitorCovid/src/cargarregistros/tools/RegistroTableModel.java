@@ -5,10 +5,12 @@ import monitor.Registros;
 import monitor.Sintoma;
 import monitor.Sintomas;
 
+import javax.swing.table.AbstractTableModel;
 import java.util.*;
 
-public class RegistroTableModel extends BaseTableModel<Registro> {
-  List<Registro> registros;
+public class RegistroTableModel extends AbstractTableModel {
+  private List<Registro> registros;
+  private final String[] columnNames = new String[]{"Fecha", "Sintoma"};
 
   public RegistroTableModel() {
     this.registros = new ArrayList<>();
@@ -20,13 +22,6 @@ public class RegistroTableModel extends BaseTableModel<Registro> {
     }
   }
 
-  public void columnas(Sintomas sintomas) {
-    addColumn("Fechas");
-    for (Sintoma sintoma : sintomas) {
-      addColumn(sintoma.toString());
-    }
-  }
-
   public void aniadirItem(Registro sintoma) {
     registros.add(0, sintoma);
   }
@@ -35,29 +30,37 @@ public class RegistroTableModel extends BaseTableModel<Registro> {
     return registros.size();
   }
 
+  @Override
+  public int getColumnCount() {
+    return columnNames.length;
+  }
+
+  @Override
+  public String getColumnName(int column) {
+    return columnNames[column];
+  }
+
   public Object getValueAt(int row, int colum) {
-    String res = "";
+    String res;
     Registro registro = registros.get(row);
     if (colum == 0) {
-      res = registro.getFecha().toString().replace("BOT 2021", "");
+      res = registro.getFecha().toString();
     } else {
-      String nombreColumna = getColumnName(colum);
-      if (existe(registro.getSintomas(), nombreColumna)) {
-        res = "X";
-      }
+      res = listarSintomasPresentes(registro.getSintomas());
     }
     return res;
   }
 
-  private boolean existe(Sintomas sintomas, String nombreColumna) {
-    boolean existe = false;
+  private String listarSintomasPresentes(Sintomas sintomas) {
+    StringBuilder listaSintomas = new StringBuilder();
     for (Sintoma sintoma : sintomas) {
-      if (sintoma.toString().equals(nombreColumna)) {
-        existe = true;
-        break;
-      }
+      listaSintomas.append(sintoma.toString());
+      listaSintomas.append(" | ");
     }
-    return existe;
+    if (listaSintomas.isEmpty()) {
+      listaSintomas.append("No se registraron sintomas");
+    }
+    return listaSintomas.toString();
   }
 }
 

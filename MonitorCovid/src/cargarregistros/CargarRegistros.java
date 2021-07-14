@@ -9,13 +9,13 @@ import monitor.Sintomas;
 import java.util.Date;
 
 public class CargarRegistros {
-  private final SerializadorRegistros<Registros> serializador;
+  private final SerializadorRegistros serializador;
   private Registros registros;
 
   public CargarRegistros(Sintomas sintomas) {
-    this.serializador = new SerializadorRegistros<>("registros.dat", "cargarregistros");
+    this.serializador = new SerializadorRegistros("registros.dat", "");
     this.cargarRegistros();
-    MenuRegistros menuRegistros = new MenuRegistros(this, sintomas, this.registros);
+    MenuRegistros menuRegistros = new MenuRegistros("Registros", this, sintomas, this.registros);
   }
 
   private void cargarRegistros() {
@@ -34,6 +34,10 @@ public class CargarRegistros {
       registro = registros.peek();
     }
     return registro;
+  }
+
+  public Registros getRegistros() {
+    return registros;
   }
 
   public void saveFile() {
