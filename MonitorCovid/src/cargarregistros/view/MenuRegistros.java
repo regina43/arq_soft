@@ -20,6 +20,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -195,8 +196,22 @@ public class MenuRegistros extends JFrame implements ActionListener {
         }
       }
     }
-    Registro registro = new Registro(new Date(), sintomasSeleccionados);
+    Date nuevaFecha = null;
+    if (!registros.isEmpty()){
+      nuevaFecha = aumentarDia(registros.peek().getFecha());
+    }else {
+      nuevaFecha = new Date();
+    }
+    Registro registro = new Registro(nuevaFecha, sintomasSeleccionados);
     actualizarTabla(registro);
+  }
+
+  private Date aumentarDia(Date fecha){
+    Calendar c = Calendar.getInstance();
+    c.setTime(fecha);
+    c.add(Calendar.DATE, 1);
+    fecha = c.getTime();
+    return fecha;
   }
 
   private Sintoma buscarSintoma(String nombre) {

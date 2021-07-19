@@ -1,5 +1,6 @@
 package diagnosticos;
 
+import diagnosticos.tools.ContadorDeDias;
 import monitor.Seguimiento;
 import monitor.SerializadorSeguimiento;
 import monitor.FuncionDiagnostico;
@@ -21,10 +22,12 @@ public class DiagnosticoPorFases extends FuncionDiagnostico {
   private final SerializadorSeguimiento serializador;
   private final int porcentaje_50_PF;
   private final int porcentaje_50_SF;
+  private ContadorDeDias contadorDeDias;
 
   public DiagnosticoPorFases(Sintomas ls) {
     super(ls);
     pesos = new HashMap<>();
+    contadorDeDias = new ContadorDeDias();
     int cantPrimeraFase = 0;
     int cantSegundaFase = 0;
     for (Sintoma s : ls) {
@@ -97,30 +100,31 @@ public class DiagnosticoPorFases extends FuncionDiagnostico {
     int recomendacion;
     Registro actual = registros.peek();
     Registro ultimo = seguimiento.getUltimo();
-    if (diferenciaDias(actual.getFecha(), ultimo.getFecha()) == 0){//cambiar
+    int diferencia = contarDias(actual.getFecha(), ultimo.getFecha());
+    if (diferencia == 1){//cambiar
       Sintomas sactual = actual.getSintomas();
       if (porcentajeValidoSintomas(sactual)){
+        this.seguimiento.aumentarDias();
         if (this.seguimiento.getDias() == 4) {
           recomendacion = 4; //inicio de sf
-          this.seguimiento.aumentarDias();
           seguimiento.registrarUltimoRegistro(actual);
         } else {
           recomendacion = 5;//dentro de sf
-          this.seguimiento.aumentarDias();
           if (this.seguimiento.esUltimoDiaSF()){
             this.seguimiento.terminarSeguimiento();
             recomendacion = 6;//terminado
+            seguimiento.reiniciarSeguimiento();
           }
           seguimiento.registrarUltimoRegistro(actual);
         }
       }else {
-        recomendacion = 1; //reinicio de pf
-        this.seguimiento.iniciarSF();
+        recomendacion = 1; //reinicio de sf
+        this.seguimiento.reiniciarSF();
         seguimiento.registrarUltimoRegistro(actual);
       }
     }else {
-      recomendacion = 1; //reinicio de pf
-      this.seguimiento.iniciarSF();
+      recomendacion = 1; //reinicio de sf
+      this.seguimiento.reiniciarSF();
       seguimiento.registrarUltimoRegistro(actual);
     }
     return recomendacion;
@@ -130,23 +134,24 @@ public class DiagnosticoPorFases extends FuncionDiagnostico {
     int recomendacion;
     Registro actual = registros.peek();
     Registro ultimo = seguimiento.getUltimo();
-    if (diferenciaDias(actual.getFecha(), ultimo.getFecha()) == 0) {//cambiar
+    int diferencia = contarDias(actual.getFecha(), ultimo.getFecha());
+    if (diferencia == 1){//cambiar
       Sintomas sactual = actual.getSintomas();
       if (porcentajeValidoSintomas(sactual)) {
         recomendacion = 2;//dentro de pf
         this.seguimiento.aumentarDias();
+        seguimiento.registrarUltimoRegistro(actual);
         if (this.seguimiento.esUltimoDiaPF()) {
           this.seguimiento.iniciarSF();
-          seguimiento.registrarUltimoRegistro(actual);
         }
       } else {
         recomendacion = 1; //reinicio de pf
-        this.seguimiento.iniciarPF();
+        this.seguimiento.reiniciarPF();
         seguimiento.registrarUltimoRegistro(actual);
       }
     } else {
       recomendacion = 1; //reinicio de pf
-      this.seguimiento.iniciarPF();
+      this.seguimiento.reiniciarPF();
       seguimiento.registrarUltimoRegistro(actual);
     }
     return recomendacion;
@@ -188,25 +193,8 @@ public class DiagnosticoPorFases extends FuncionDiagnostico {
     this.serializador.serializar(seguimiento);
   }
 
-  private int diferenciaDias(Date fechaI, Date fechaF) {
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    String fecha1 = dateFormat.format(fechaI);
-    String fecha2 = dateFormat.format(fechaF);
-
-    Date fechaInicial = null;
-    try {
-      fechaInicial = dateFormat.parse(fecha1);
-    } catch (ParseException e) {
-      e.printStackTrace();
-    }
-    Date fechaFinal = null;
-    try {
-      fechaFinal = dateFormat.parse(fecha2);
-    } catch (ParseException e) {
-      e.printStackTrace();
-    }
-    int dias = (int) ((fechaFinal.getTime() - fechaInicial.getTime()) / 86400000);
-    return dias;
+  private int contarDias(Date fechaI, Date fechaF) {
+    return this.contadorDeDias.contarDias(fechaI, fechaF);
   }
 }
 

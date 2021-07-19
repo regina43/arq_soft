@@ -16,7 +16,6 @@ import javax.swing.JTable;
 import javax.swing.JScrollPane;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -117,7 +116,7 @@ public class MenuSintomas extends JFrame implements ActionListener {
   }
 
   private void addSintoma() throws IOException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-    String nombre = textoNombre.getText().toLowerCase().replaceAll("\\s{2,}", " ").trim();
+    String nombre = textoNombre.getText().toUpperCase().replaceAll("\\s{2,}", " ").trim();
     String nombreClase = "sintomas." + tipos.getSelectedItem();
     Class<?> cl = Class.forName(nombreClase);
     Constructor<?> constructor = cl.getConstructor(String.class);
@@ -135,9 +134,7 @@ public class MenuSintomas extends JFrame implements ActionListener {
   }
 
   private String normalizarCadena(String nombre) {
-    String primeraLetra = nombre.substring(0, 1).toUpperCase();
-    String restoDeLaCadena = nombre.substring(1);
-    return primeraLetra + restoDeLaCadena;
+    return nombre.toUpperCase();
   }
 
   private boolean existe(Sintoma sintoma, Sintomas sintomas) {

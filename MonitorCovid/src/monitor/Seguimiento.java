@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class Seguimiento implements Serializable {
   private final int ULTIMO_DIA_PF = 3;
-  private final int ULTIMO_DIA_SF = 8;
+  private final int ULTIMO_DIA_SF = 9;
   private Registro ultimo;
   private int dia;
   private boolean primeraFase;
@@ -18,10 +18,6 @@ public class Seguimiento implements Serializable {
     this.primeraFase = false;
     this.segundaFase = false;
     this.iniciado = false;
-  }
-
-  public void setDia(int ndia) {
-    this.dia = ndia;
   }
 
   public boolean estaPrimeraFase(){
@@ -61,7 +57,6 @@ public class Seguimiento implements Serializable {
   }
 
   public void iniciarSF() {
-    this.dia = 4;
     this.primeraFase = false;
     this.segundaFase = true;
   }
@@ -83,10 +78,23 @@ public class Seguimiento implements Serializable {
   }
 
   public void reiniciarSeguimiento() {
-    if (primeraFase) {
-      iniciarPF();
-    }else if (segundaFase){
-      iniciarSF();
-    }
+    this.ultimo = null;
+    this.dia = 0;
+    this.primeraFase = false;
+    this.segundaFase = false;
+    this.iniciado = false;
+    this.terminado = false;
+  }
+
+  public void reiniciarSF() {
+    this.primeraFase = false;
+    this.segundaFase = true;
+    this.dia = 3;
+  }
+
+  public void reiniciarPF() {
+    this.iniciado = true;
+    this.primeraFase = true;
+    this.dia = 1;
   }
 }
